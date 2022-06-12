@@ -116,14 +116,14 @@ contract Mint_Tests is Test, IERC721Receiver {
     function test_get_and_set_baseUri() public{
         
         // Check that it is initially blank
-        if(keccak256(bytes(basic_nft.baseURI()))!=keccak256(bytes(""))){
+        if(keccak256(bytes(basic_nft.baseUri()))!=keccak256(bytes(""))){
             revert("Initial baseURI isn't blank");
         }
         // Change it
         string memory newUri = "www.google.com/";
         basic_nft.setBaseURI(newUri);
         // Check it
-        if(keccak256(bytes(basic_nft.baseURI()))!=keccak256(bytes(newUri))){
+        if(keccak256(bytes(basic_nft.baseUri()))!=keccak256(bytes(newUri))){
             revert("The baseURI didn't change");
         }
 

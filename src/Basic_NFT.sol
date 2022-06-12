@@ -28,6 +28,12 @@ v1.0 of Non-Fungible-Pricing will implement method 2 and use reasonable step val
 uint16 supports 65536 steps of 0.01 ETH (max price 655 ETH for a mint). 
 Assuming ETH price in a range of $400 - $4000 (as of June 2022), this should allow for a usable price range.
 
+TODO LIST
+
+~~Main items~~
+Tests for this
+Clean up the if statement forest and turn it to switch and case if I can somehow
+
 */
 
 contract Basic_NFT is ERC721A, Ownable{
@@ -67,14 +73,17 @@ contract Basic_NFT is ERC721A, Ownable{
     mapping (uint256 => Sixteen_Prices) NFT_Prices;
 
     /// @dev OnlyOwner function allows contract owner to set prices after contract creation
-    /// @param prices_ [Here it is 10,000 long] array of prices, all as uint16 multiples of 0.01 ETH.
-    function setPrices(uint16[10000] calldata prices_) external onlyOwner{
+    /// @param prices_ Array of prices, all as uint16 multiples of 0.01 ETH.
+    function setPrices(uint16[] calldata prices_) external onlyOwner{
 
+        uint256 arrayLength = prices_.length;
         // Set up an instance of the prices in memory 
         Sixteen_Prices memory priceArray;
 
-        uint256 numberOfSlotsRequired = (prices_.length / 16 ) + 1;
-        uint256 currentOffset = 0;
+        uint256 numberOfSlotsRequired = (arrayLength / 16 ) + 1;
+
+        uint256 startIndex = 0;
+        uint256 endIndex;
 
         
         /// NOTE This will leave any uninitialised values as copies of the second last mapping element. 
@@ -84,10 +93,36 @@ contract Basic_NFT is ERC721A, Ownable{
         // Loop through the prices 16 at a time
         for(uint256 index=0; index<numberOfSlotsRequired; ++index){
             
+            // Don't read non-existent array entries
+            if(startIndex + 16 > arrayLength - 1){
+                endIndex = arrayLength - 1;
+            }else{
+                endIndex = startIndex+16;
+            }
+
+            // Copy it to memory
+            uint16[] memory tempPrices = prices_[startIndex : endIndex];
+
             // Copy the corresponding slice of the array
-            priceArray = [currentOffset:currentOffset+16];
+            priceArray.slot0 = tempPrices[0];
+            priceArray.slot1 = tempPrices[1];
+            priceArray.slot2 = tempPrices[2];
+            priceArray.slot3 = tempPrices[3];
+            priceArray.slot4 = tempPrices[4];
+            priceArray.slot5 = tempPrices[5];
+            priceArray.slot6 = tempPrices[6];
+            priceArray.slot7 = tempPrices[7];
+            priceArray.slot8 = tempPrices[8];
+            priceArray.slot9 = tempPrices[9];
+            priceArray.slot10 = tempPrices[10];
+            priceArray.slot11 = tempPrices[11];
+            priceArray.slot12 = tempPrices[12];
+            priceArray.slot13 = tempPrices[13];
+            priceArray.slot14 = tempPrices[14];
+            priceArray.slot15 = tempPrices[15];
+            
             // Increment the offset
-            currentOffset += 16;
+            startIndex += 16;
             // Write to storage
             NFT_Prices[index] = priceArray;
             
