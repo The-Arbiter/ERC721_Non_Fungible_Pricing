@@ -548,7 +548,7 @@ contract ERC721A is Context, ERC165, IERC721A {
             currSlot.burned = true;
 
             // If the ownership slot of tokenId+1 is not explicitly set, that means the burn initiator owns it.
-            // Set the slot of tokenId+1 explicitly in storage to maintain correctness for ownerOf(tokenId+1) calls.
+            // Set the slot of tokenId+1 explicitly in storage to maintain NFD correctness for ownerOf(tokenId+1) calls.
             uint256 nextTokenId = tokenId + 1;
             TokenOwnership storage nextSlot = _ownerships[nextTokenId];
             if (nextSlot.addr == address(0)) {
